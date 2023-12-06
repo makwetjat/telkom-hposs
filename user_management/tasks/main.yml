@@ -1,0 +1,71 @@
+- name: Create user/s
+  user:
+    name: "{{ item }}"
+    password: "{{ password | password_hash('sha512') }}"
+    shell: /bin/bash
+  loop: "{{ users_to_add }}"
+  when: useradmin == 'addnewuser'
+
+- name: Hash the provided password
+  set_fact:
+    hashed_password: "{{ password | password_hash('sha512') }}"
+  when: useradmin == 'resetpassword'
+
+- name: Reset Linux User Password
+  user:
+    name: "{{ item }}"
+    password: "{{ hashed_password }}"
+  loop: "{{ users_to_add }}"
+  when: useradmin == 'resetpassword'
+
+##
+#  Delete user
+##
+
+- name: Delete users
+  user:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ users_to_add }}"
+  when: useradmin == 'deleteuser'
+
+##
+#  Sudo rights
+## 
+
+- name: Create sudoers file for user with allowed commands
+  template:
+    src: "templates/{{ template }}"
+    dest: "/tmp/{{ usernames }}"
+    owner: root
+    group: root
+    mode: '0440'
+  vars:
+    username: "{{ usernames }}"
+    allowed_commands: "{{ allowed_commands.splitlines() }}"
+  when: sudo == 'yes'
+
+- name: Check if /etc/sudoers.d/{{ usernames }} exists
+  stat:
+    path: "/etc/sudoers.d/{{ usernames }}"
+  register: file_check
+  # when: sudo == 'yes'
+
+- name: Copy file from /tmp to /etc/sudoers.d/{{ username }} if it doesn't exist
+  copy:
+    src: "/tmp/{{ usernames }}"
+    dest: "/etc/sudoers.d/{{ usernames }}"
+    mode: "0440"
+    remote_src: yes
+  when: not file_check.stat.exists and sudo == 'yes'
+
+- name: Append file from /tmp to sudoers if it exists
+  shell: cat "/tmp/{{ usernames }}" >> "/etc/sudoers.d/{{ usernames }}" && rm -rf "/tmp/{{ usernames }}"
+  when: file_check.stat.exists and sudo == 'yes'
+
+- name: Remove Template from /tmp once tasks complete
+  file:
+    path: "/tmp/{{ usernames }}"
+    state: absent
+  when: not file_check.stat.exists and sudo == 'yes'
+

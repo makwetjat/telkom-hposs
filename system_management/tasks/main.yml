@@ -1,0 +1,18 @@
+- name: Stop and Disable Firewall
+  service:
+    name: firewalld
+    state: stopped
+    enabled: no
+  when: firewall == 'yes'
+    
+- name: Modify SELinux configuration
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: 'SELINUX=disabled'
+  when: selinux == 'yes'
+
+- name: Set SELinux to Permissive mode
+  command: setenforce 0
+  when:  selinux == 'yes'
+  ignore_errors: yes

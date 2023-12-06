@@ -1,0 +1,16 @@
+---
+- name: Subscribe Red Hat Server
+  command: subscription-manager register --username=makwetjat --password=2021@March\!@# --auto-attach
+  register: register_output
+
+- name: Display Registration Result
+  debug:
+    var: register_output.stdout
+
+- name: Refresh Subscription Manager
+  command: subscription-manager refresh
+  register: refresh_output
+
+- name: Display Refresh Result
+  debug:
+    var: refresh_output.stdout

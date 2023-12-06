@@ -1,0 +1,30 @@
+---
+- name: Check server subscription status
+  command: subscription-manager status
+  register: subscription_status
+  ignore_errors: true
+
+- name: Display subscription status
+  debug:
+    msg: "Server is{{ ' not' if subscription_status.rc != 0 else '' }} subscribed"
+
+- name: Update packages
+  yum:
+    name: '*'
+    state: latest
+  register: update_result
+  when: subscription_status.rc == 0
+
+- name: Reboot the server if updates were installed
+  when: update_result is defined and update_result.changed
+  reboot:
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+  register: reboot_result
+
+- name: Wait for server to come back online
+  when: reboot_result is defined and reboot_result.changed
+  wait_for_connection:
+    delay: 60
+    timeout: 600
+

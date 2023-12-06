@@ -1,0 +1,8 @@
+---
+- name: Apply Patch and Reboot Role
+  hosts: "{{ target_servers }}"
+  become: true
+  become_user: root
+  roles:
+    - patch
+

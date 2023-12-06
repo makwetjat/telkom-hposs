@@ -1,0 +1,5 @@
+---
+- name: Add date and time to bash history with /etc/bashrc
+  lineinfile:
+    path: /etc/bashrc
+    line: HISTTIMEFORMAT="%F %T "

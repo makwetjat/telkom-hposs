@@ -1,0 +1,7 @@
+---
+- name: Subscribe Red Hat Servers
+  hosts: "{{ target_servers }}"
+  become: true
+  become_user: root
+  roles:
+    - redhat_subscription

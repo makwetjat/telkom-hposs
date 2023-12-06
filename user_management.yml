@@ -1,0 +1,13 @@
+---
+- name: Linux User Administration
+  hosts: "{{ target_servers }}"
+  become: true
+  become_user: root
+
+  vars:
+    usernames_list: "{{ usernames.split('\n') }}"
+
+  roles:
+    - role: user_management
+      users_to_add: "{{ usernames_list }}"
+

@@ -1,0 +1,2 @@
+# {{ ansible_managed }}
+{{ username }} ALL=(ALL) NOPASSWD: {% for command in allowed_commands | split('\n') %}/usr/bin/{{ command.strip() }}{% if not loop.last %}, {% endif %}{% endfor %}
