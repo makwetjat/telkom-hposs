@@ -1,6 +1,8 @@
 ---
 - name: Linux User Administration
   hosts: target_servers
+  vars_files:
+    - variables.yml
   become: true
   become_user: root
 
