@@ -1,6 +1,6 @@
 ---
 - name: Linux User Administration
-  hosts: "{{ target_servers }}"
+  hosts: target_servers
   become: true
   become_user: root
 
