@@ -1,6 +1,6 @@
 ---
 - name: Update bashrc with date and time
-  hosts: "{{ target_servers }}"
+  hosts: target_servers
   gather_facts: false
   become: true
   become_user: root
