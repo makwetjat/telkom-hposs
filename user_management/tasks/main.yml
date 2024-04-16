@@ -33,6 +33,10 @@
 #  Sudo rights
 ## 
 
+- name: Debug
+  debug:
+    msg: "sudo variable value is {{ sudo }}"
+
 - name: Create sudoers file for user with allowed commands
   template:
     src: "templates/{{ template }}"
