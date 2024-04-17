@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Prompt for username
-username=ssh-username
-hostname=HOSTNAME
-password=ssh-password
+username=sshusername
+hostname=RHOSTNAME
+password=sshpassword
 
 # Path to local script
 local_script="sudoers.sh"
