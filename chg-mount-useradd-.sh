@@ -6,7 +6,7 @@ if [ -e "/dev/mapper/vg_misc-tsanas" ]; then
     umount /tsanas/users/tooladm
     
     # Remove logical volume
-    lvremove /dev/mapper/vg_misc-tsanas
+    lvremove --force /dev/mapper/vg_misc-tsanas
 fi
 # Comment out line in /etc/fstab if it exists
 if grep -q "/dev/vg_misc/tsanas /tsanas/users/tooladm" /etc/fstab; then
