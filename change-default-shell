@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Define the target shell
+new_shell="/bin/bash"
+
+# Define the line to search for in /etc/passwd
+search_line="oracle:x:30094:30014::/app/oracle:/bin/ksh"
+
+# Check if the line exists in /etc/passwd
+if grep -q "^$search_line$" /etc/passwd; then
+    # Check if the shell is already /bin/bash
+    if grep -q "^$search_line$" /etc/passwd | grep -q "/bin/bash"; then
+        echo "Shell for oracle user is already set to $new_shell."
+    else
+        # Replace the shell with the new shell
+        sudo sed -i "s|^$search_line\$|oracle:x:30094:30014::/app/oracle:$new_shell|" /etc/passwd
+        echo "Shell for oracle user updated to $new_shell."
+    fi
+else
+    echo "The specified line does not exist in /etc/passwd."
+fi
